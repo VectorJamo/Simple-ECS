@@ -39,7 +39,7 @@ public:
 	void AddComponent(T component);
 
 	template<typename T>
-	T GetComponent();
+	T* GetComponent();
 
 };
 Entity::Entity()
@@ -72,7 +72,7 @@ void Entity::AddComponent(T component)
 }
 
 template<typename T>
-T Entity::GetComponent()
+T* Entity::GetComponent()
 {
 	const std::type_info& info = typeid(T);
 	int key = info.hash_code();
@@ -81,7 +81,7 @@ T Entity::GetComponent()
 	if (m_Components.count(key) > 0)
 	{
 		// The component exists, so return it.
-		return *((T*)(m_Components[key]));
+		return ((T*)(m_Components[key]));
 	}
 	else {
 		// The component does not exist.
@@ -95,9 +95,11 @@ int main()
 	Entity e;
 	e.AddComponent<Position>({ 1.0f, 2.0f });
 
-	Position p = e.GetComponent<Position>();
+	Position* p = e.GetComponent<Position>();
+	p->y++;
+	
+	std::cout << e.GetComponent<Position>()->y;
 
-	std::cout << p.y;
 
 	std::cin.get();
 	return 0;
